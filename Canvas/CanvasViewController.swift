@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CanvasViewController: UIViewController {
+class CanvasViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var trayView: UIView!
     
@@ -85,6 +85,13 @@ class CanvasViewController: UIViewController {
             let pan = UIPanGestureRecognizer(target: self, action: #selector(panning(_:)))
             newlyCreatedFace.addGestureRecognizer(pan)
             
+            let pinch = UIPinchGestureRecognizer(target: self, action: #selector(didPinch(_:)))
+            
+            
+            
+            newlyCreatedFace.addGestureRecognizer(pinch)
+            pinch.delegate = self
+            
             UIView.animate(withDuration: 0.1, animations: { 
                 self.newlyCreatedFace.transform = self.newlyCreatedFace.transform.scaledBy(x: 2, y: 2)
             })
@@ -121,9 +128,21 @@ class CanvasViewController: UIViewController {
                 sender.view?.transform = (sender.view?.transform.scaledBy(x: 0.5, y: 0.5))!
             })
         }
-        
+    }
+    
+    func didPinch(_ sender: UIPinchGestureRecognizer) {
+        let scale = sender.scale
+        print(scale)
+        let imageView = sender.view as! UIImageView
+        imageView.transform = CGAffineTransform(scaleX: scale, y: scale)
+        //sender.scale = 1
         
     }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
 
     /*
     // MARK: - Navigation
